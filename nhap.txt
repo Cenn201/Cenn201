@@ -1,0 +1,21 @@
+in ảnh
+
+<header>
+        <div class="container">
+            <div class="row">
+                <?php
+                foreach($productList as $itemproduct)
+                {
+                ?>
+                <div class="col_md_3">
+                    <img src="./public/hinhanh/product/<?php echo $itemproduct['product_img']; ?>" alt="">
+                    
+                </div>
+                <?php
+                };
+                ?>
+            </div>
+        </div>
+    </header>
+
+
