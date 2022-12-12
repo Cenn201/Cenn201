@@ -124,8 +124,8 @@ $categoryList = $categoryModel->GetAllCategory();
                 foreach ($categoryList as $itemcategory) {
                 ?>
                   <div class="heading-section">
-                    <h4><em><?php echo $itemcategory['category_name']; ?></em>
-                  <hr></h4>
+                    <hr>
+                    </h4>
                   </div>
                   <div class="row">
                     <?php
@@ -164,7 +164,6 @@ $categoryList = $categoryModel->GetAllCategory();
                           </div>
                         </div>
                       </div>
-
                     <?php
                     };
                     ?>
@@ -175,7 +174,6 @@ $categoryList = $categoryModel->GetAllCategory();
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>

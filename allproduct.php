@@ -4,8 +4,8 @@ spl_autoload_register(function ($classname) {
     require_once("./app/models/$classname.php");
 });
 $productModel = new ProductModel();
-$categoryModel = new CategoryModel();
-$categoryList = $categoryModel->GetAllCategory();
+
+$productList = $productModel->GetAllProducts();
 ?>
 
 <!DOCTYPE html>
@@ -92,27 +92,89 @@ $categoryList = $categoryModel->GetAllCategory();
         </div>
     </header>
     <!-- ***** Header Area End ***** -->
+
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <div class="page-content p-0">
-                    <div class="addproduct">
-                    <div class="container">
+                <div class="page-content">
+
+                    <!-- ***** Banner Start ***** -->
+                    <div class="main-banner">
                         <div class="row">
-                            <div class="col-md-4"></div>
-                            <div class="col-md-4"></div>
-                            <div class="col-md-4"></div>
+                            <div class="col-lg-5"></div>
+                            <div class="col-lg-7 text-end">
+                                <div class="header-text">
+                                    <h6>Welcome to Cenn201</h6>
+                                    <h4><em>Điện thoại <br>
+                                        </em> Hàng đầu-uy tín-chất lượng</h4>
+                                    <div class="main-button">
+                                        <a href="/SanPham.php">Sản phẩm</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <!-- ***** Banner End ***** -->
+
+                    <!-- ***** Most Popular Start ***** -->
+                    <div class="most-popular">
+                        <h2 class="divider line glow" contenteditable>Tất cả sản phẩm</h2>
+                        <div class="row">
+                            <<div class="col-lg-12">
+                                <div class="row">
+                                    <?php
+                                    foreach ($productList as $itemproduct) {
+                                    ?>
+                                        <div class="col-lg-3 col-sm-6">
+                                            <div class="item">
+
+                                                <a href="/Cenn201/product.php?id=<?php echo $itemproduct['product_id']; ?>">
+                                                    <img width="186px" height="200px" src="public/hinhanh/product/<?php echo $itemproduct['product_img']; ?>" alt="">
+                                                </a>
+                                                <br>
+                                                <div class="item-content">
+                                                    <div class="container">
+                                                        <div class="row">
+                                                            <div class="col-md-7 item-content1">
+                                                                <h4 class="p-0"><span><?php echo $itemproduct['product_name']; ?></span><?php echo $itemproduct['product_slug']; ?>
+                                                                    <br>
+                                                                    <span style="color: red;"><?php echo number_format(sprintf('%0.3f', $itemproduct['product_price'])) . "đ"; ?></span>
+                                                                </h4>
+                                                            </div>
+                                                            <div class="col-md-5 p-0 item-conten2">
+                                                                <ul>
+                                                                    <li>
+                                                                        <i class='fas fa-cart-plus' style='color: #f3da35'></i>
+                                                                    </li>
+                                                                    <li>
+                                                                        <i class="fa fa-heart" style='color:#39def3'></i> 48
+                                                                    </li>
+                                                                    <li><i class="fa fa-eye"></i> 2.3M</li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php
+                                    };
+                                    ?>
+                                </div>
+                        </div>
                     </div>
+                    <h2 class="divider line glow" contenteditable>The end</h2>
                 </div>
             </div>
         </div>
     </div>
-
-
-
+    </div>
     <!-- ***** Most Popular End ***** -->
+
+
+
+
+
 
     <!-- ***** Gaming Library Start ***** -->
     <footer>
@@ -129,10 +191,6 @@ $categoryList = $categoryModel->GetAllCategory();
             </div>
         </div>
     </footer>
-
-
-
-
 
     <!-- Scripts -->
     <!-- Bootstrap core JavaScript -->

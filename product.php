@@ -102,7 +102,7 @@ if (isset($_GET['id'])) {
                                 </div>
                             </div>
                             <div class="col-lg-3 col-sm-6 p-4">
-                                <h4 class="p-0"><span><?php echo $itemproduct['product_name'];?></span>
+                                <h4 class="p-0"><span><?php echo $itemproduct['product_name']; ?></span>
                                     <br>
                                     <span style="color: info;">
                                         <?php echo $itemproduct['product_slug']; ?>
@@ -110,16 +110,17 @@ if (isset($_GET['id'])) {
                                     <br>
                                     <span style="color: red;"><?php echo number_format(sprintf('%0.3f', $itemproduct['product_price'])) . "đ"; ?></span>
                                 </h4>
-                                <div class="text-bottom text-warning"><ul>
-                                    <li>
-                                      <i class="fa fa-heart" style='color:#39def3'></i> 48
-                                    </li>
-                                    <li><i class="fa fa-eye"></i> 2.3M</li>
-                                    <li>
-                                      <input type="number" name="" id="">
-                                      <i class='fas fa-cart-plus' style='color: #f3da35'></i>
-                                    </li>
-                                  </ul>
+                                <div class="text-bottom text-warning">
+                                    <ul>
+                                        <li>
+                                            <i class="fa fa-heart" style='color:#39def3'></i> 48
+                                        </li>
+                                        <li><i class="fa fa-eye"></i> 2.3M</li>
+                                        <li>
+                                            <input type="number" name="" id="">
+                                            <i class='fas fa-cart-plus' style='color: #f3da35'></i>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
