@@ -6,6 +6,13 @@ spl_autoload_register(function ($classname) {
 $productModel = new ProductModel();
 $categoryModel = new CategoryModel();
 $categoryList = $categoryModel->GetAllCategory();
+
+$viewedProductList = [];
+if (isset($_COOKIE['viewedProduct'])) {
+  $arrId = json_decode($_COOKIE['viewedProduct'], true);
+  $viewedProductList = $productModel->getProductByIds($arrId);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -70,7 +77,7 @@ $categoryList = $categoryModel->GetAllCategory();
             <ul class="nav">
               <li><a href="/Cenn201" class="active">Trang chủ</a></li>
               <li class="nav-item dropdown d-flex">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="/allproduct.php" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Sản Phẩm
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -80,7 +87,7 @@ $categoryList = $categoryModel->GetAllCategory();
                 </ul>
               </li>
               <li><a href="">Giỏ hàng</a></li>
-              <li><a href="">Dăng nhập<img src="public/hinhanh/background/profile-header.jpg" alt=""></a></li>
+              <li><a href="login.php">Đăng nhập<img src="public/hinhanh/background/profile-header.jpg" alt=""></a></li>
             </ul>
             <a class='menu-trigger'>
               <span>Menu</span>
@@ -120,9 +127,55 @@ $categoryList = $categoryModel->GetAllCategory();
           <div class="most-popular">
             <div class="row">
               <div class="col-lg-12">
+                <h5>VỪA XEM</h5>
+                <div class="heading-section">
+                  <hr>
+                  </h4>
+                </div>
+                <div class="row">
+                  <?php
+                  foreach ($viewedProductList as $viewedItem) {
+                  ?>
+                    <div class="col-lg-3 col-sm-6">
+                      <div class="item">
+
+                        <a href="/Cenn201/product.php?id=<?php echo $viewedItem['product_id']; ?>">
+                          <img width="100px" height="190px" src="public/hinhanh/product/<?php echo $viewedItem['product_img']; ?>" alt="">
+                        </a>
+                        <br>
+                        <div class="item-content">
+                          <div class="container">
+                            <div class="row">
+                              <div class="col-md-7 item-content1">
+                                <h4 class="p-0"><span><?php echo $viewedItem['product_name']; ?></span><?php echo $viewedItem['product_slug']; ?>
+                                  <br>
+                                  <span style="color: red;"><?php echo number_format(sprintf('%0.3f', $viewedItem['product_price'])) . "đ"; ?></span>
+                                </h4>
+                              </div>
+                              <div class="col-md-5 p-0 item-conten2">
+                                <ul>
+                                  <li>
+                                    <i class='fas fa-cart-plus' style='color: #f3da35'></i>
+                                  </li>
+                                  <li>
+                                    <i class="fa fa-heart" style='color:#39def3'></i> 0
+                                  </li>
+                                  <li><i class="fa fa-eye"></i> 0</li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <?php
+                  }
+                  ?>
+                </div>
                 <?php
                 foreach ($categoryList as $itemcategory) {
                 ?>
+                  <h4><?php echo $itemcategory['category_name']; ?></h4>
                   <div class="heading-section">
                     <hr>
                     </h4>
@@ -136,7 +189,7 @@ $categoryList = $categoryModel->GetAllCategory();
                         <div class="item">
 
                           <a href="/Cenn201/product.php?id=<?php echo $itemproduct['product_id']; ?>">
-                            <img width="186px" height="200px" src="public/hinhanh/product/<?php echo $itemproduct['product_img']; ?>" alt="">
+                            <img width="100px" height="190px" src="public/hinhanh/product/<?php echo $itemproduct['product_img']; ?>" alt="">
                           </a>
                           <br>
                           <div class="item-content">
@@ -154,9 +207,9 @@ $categoryList = $categoryModel->GetAllCategory();
                                       <i class='fas fa-cart-plus' style='color: #f3da35'></i>
                                     </li>
                                     <li>
-                                      <i class="fa fa-heart" style='color:#39def3'></i> 48
+                                      <i class="fa fa-heart" style='color:#39def3'></i> 0
                                     </li>
-                                    <li><i class="fa fa-eye"></i> 2.3M</li>
+                                    <li><i class="fa fa-eye"></i> 0</li>
                                   </ul>
                                 </div>
                               </div>

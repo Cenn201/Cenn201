@@ -3,10 +3,17 @@ require_once('./config/database.php');
 spl_autoload_register(function ($classname) {
     require_once("./app/models/$classname.php");
 });
+
+$productModel = new ProductModel();
+if(isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $itemproduct = $productModel->GetProduct($id);
+}
+
+
 $categoryModel = new CategoryModel();
 $categoryList = $categoryModel->GetAllCategory();
 if (!empty($_POST['product_name']) && !empty($_POST['product_catid']) && !empty($_POST['product_slug']) && !empty($_POST['product_price']) && !empty($_POST['product_number']) && !empty($_POST['product_sale']) && !empty($_POST['product_detail'])) {
-    $productModel = new ProductModel();
     $product_name = $_POST['product_name'];
     $product_catid = $_POST['product_catid'];
     $product_slug = $_POST['product_slug'];
@@ -20,12 +27,17 @@ if (!empty($_POST['product_name']) && !empty($_POST['product_catid']) && !empty(
     if (is_uploaded_file($_FILES['product_img']['tmp_name']) && move_uploaded_file($_FILES['product_img']['tmp_name'],'public/hinhanh/product/'. $_FILES['product_img']['name'])) 
     {
         // Upload thành công thì thêm vào db;
-        if ($productModel->addProduct($product_name, $product_catid, $product_slug, $product_img, $product_number, $product_price, $product_sale, $product_detail)) {
-            echo "<h4>Thêm thành công !!</h4>";
+        if ($productModel->editProduct($product_name, $product_catid, $product_slug, $product_img, $product_number, $product_price, $product_sale, $product_detail,$id)) {
+            header('Location: adminproduct.php');
+            echo "<script>
+            alert('Sửa thành công!');
+        </script>";
         }
     } else 
     {
-        echo "<h4>Thêm thất bại !!</h4>";
+        echo "<script>
+            alert('Sửa thất bại!');
+        </script>";
     }
 }
 ?>
@@ -129,15 +141,15 @@ if (!empty($_POST['product_name']) && !empty($_POST['product_catid']) && !empty(
                                     <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
                                         <div class="row">
                                             <div class="col-12 text-center">
-                                                <h1 class="tm-block-title d-inline-block" style="color: yellow;padding-bottom: 15px;">Add Product</h1>
+                                                <h1 class="tm-block-title d-inline-block" style="color: yellow;padding-bottom: 15px;">edit Product</h1>
                                             </div>
                                         </div>
-                                        <form action="addproduct.php" class="tm-edit-product-form" method="post" enctype="multipart/form-data">
+                                        <form action="" class="tm-edit-product-form" method="post" enctype="multipart/form-data">
                                             <div class="row tm-edit-product-row">
                                                 <div class="col-xl-6 col-lg-6 col-md-12">
                                                     <div class="form-group mb-3">
                                                         <label for="product_name">Tên sản phẩm :</label>
-                                                        <input id="product_name" name="product_name" type="text" class="form-control validate" required />
+                                                        <input id="product_name" name="product_name" type="text" class="form-control validate" value="<?php echo $itemproduct['product_name']; ?>" required />
                                                     </div>
                                                     <div class="form-group mb-3 py-2">
                                                         <label for="product_catid">Loại : </label>
@@ -146,7 +158,7 @@ if (!empty($_POST['product_name']) && !empty($_POST['product_catid']) && !empty(
                                                             foreach ($categoryList as $itemcategory) {
                                                             ?>
                                                                 <option value="<?php echo $itemcategory['category_id']; ?>" >
-                                                                    <div class="text-dark"><?php echo $itemcategory['category_name']; ?></div>
+                                                                    <div class="text-dark"  value="<?php echo $itemproduct['product_catid']; ?>"><?php echo $itemcategory['category_name']; ?></div>
                                                                 </option>
                                                             <?php
                                                             };
@@ -156,47 +168,43 @@ if (!empty($_POST['product_name']) && !empty($_POST['product_catid']) && !empty(
                                                     <div class="form-group mb-3 py-1">
                                                         <label for="product_slug">Dung lượng
                                                         </label>
-                                                        <input id="product_slug" name="product_slug" type="text" class="form-control validate" required />
+                                                        <input id="product_slug" name="product_slug" type="text" class="form-control validate" required  value="<?php echo $itemproduct['product_slug']; ?>"/>
                                                     </div>
                                                     <div class="form-group mb-3 py-1">
                                                         <label for="product_number">Số lượng :
                                                         </label>
-                                                        <input id="product_number" name="product_number" type="text" class="form-control validate" required />
+                                                        <input id="product_number" name="product_number" type="text" class="form-control validate" required  value="<?php echo $itemproduct['product_number']; ?>"/>
                                                     </div>
-
                                                     <div class="form-group mb-3 py-1">
                                                         <label for="product_price">Giá :
                                                         </label>
-                                                        <input id="product_price" name="product_price" type="text" class="form-control validate" required />
+                                                        <input id="product_price" name="product_price" type="text" class="form-control validate" required  value="<?php echo $itemproduct['product_price']; ?>"/>
                                                     </div>
                                                     <div class="form-group mb-3 py-1">
                                                         <label for="product_sale">Khuyến mãi :
                                                         </label>
-                                                        <input id="product_sale" name="product_sale" type="text" class="form-control validate" required />
+                                                        <input id="product_sale" name="product_sale" type="text" class="form-control validate" required  value="<?php echo $itemproduct['product_sale']; ?>"/>
                                                     </div>
-
                                                 </div>
                                                 <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
 
-                                                    <div class="form-group mb-3">
 
                                                         <div class="form-group mb-3">
                                                             <label for="description">Giới thiệu :</label>
-                                                            <textarea id="product_detail" name="product_detail" class="validate" rows="8" cols="42" required></textarea>
+                                                            <textarea id="product_detail" name="product_detail" class="validate" rows="8" cols="42" required  value="<?php echo $itemproduct['product_detail']; ?>"></textarea>
                                                         </div>
                                                         <div><label for="product_img">Hình ảnh :</label></div>
                                                         <div class="tm-product-img-dummy mx-auto" onclick="document.getElementById('product_img').click();">
                                                             <i class="fas fa-cloud-upload-alt tm-upload-icon"></i>
                                                         </div>
                                                         <div class="custom-file mt-3 mb-3 text-center">
-                                                            <input id="product_img" name="product_img" type="file" style="display:none;" />
+                                                            <input id="product_img" name="product_img" type="file" style="display:none;" value="<?php echo $itemproduct['product_img']; ?>" />
                                                             <input type="button" class="btn btn-primary btn-block mx-auto" value="UPLOAD PRODUCT IMAGE" onclick="document.getElementById('product_img').click();" />
                                                         </div>
-                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="col-12 text-center">
-                                                <button type="submit" class="btn btn-primary btn-block text-uppercase">Add Product Now</button>
+                                                <button type="submit" class="btn btn-primary btn-block text-uppercase">edit Product Now</button>
                                             </div>
                                         </form>
                                     </div>

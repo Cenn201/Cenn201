@@ -9,6 +9,25 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
     $productModel = new ProductModel();
     $itemproduct = $productModel->GetProduct($id);
+    if(!isset($_COOKIE['viewedProduct'])) {
+        $value = [$id];
+        setcookie('viewedProduct', json_encode($value), time() + 3600);
+    }
+    else {
+        $viewedProduct = json_decode($_COOKIE['viewedProduct'], true);
+        if(!in_array($id, $viewedProduct)) {
+            if(count($viewedProduct) == 5) {
+                array_shift($viewedProduct);
+            }
+            array_push($viewedProduct, $id);
+            setcookie('viewedProduct', json_encode($viewedProduct), time() + 3600);
+        }
+        else {
+            unset($viewedProduct[array_search($id, $viewedProduct)]);
+            array_push($viewedProduct, $id);
+            setcookie('viewedProduct', json_encode($viewedProduct), time() + 3600);
+        }
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -94,30 +113,26 @@ if (isset($_GET['id'])) {
                 <div class="page-content">
                     <div class="container">
                         <div class="row">
-                            <div class="col-lg-3 col-sm-6 p-4">
+                            <div class="col-lg-6 col-sm-6 p-4" style="border-radius: 15%;">
                                 <div class="item">
                                     <div>
-                                        <img width="186px" height="200px" src="public/hinhanh/product/<?php echo $itemproduct['product_img']; ?>" alt="">
+                                        <img src="public/hinhanh/product/<?php echo $itemproduct['product_img']; ?>" alt="">
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-sm-6 p-4">
+                            <div class="col-lg-6 col-sm-6 p-4">
                                 <h4 class="p-0"><span><?php echo $itemproduct['product_name']; ?></span>
-                                    <br>
-                                    <span style="color: info;">
-                                        <?php echo $itemproduct['product_slug']; ?>
-                                    </span>
-                                    <br>
+                                    <span style="color: info;"><?php echo $itemproduct['product_slug']; ?></span><br>
                                     <span style="color: red;"><?php echo number_format(sprintf('%0.3f', $itemproduct['product_price'])) . "đ"; ?></span>
                                 </h4>
                                 <div class="text-bottom text-warning">
                                     <ul>
                                         <li>
                                             <i class="fa fa-heart" style='color:#39def3'></i> 48
+                                            <i class="fa fa-eye"></i> 2.3M
                                         </li>
-                                        <li><i class="fa fa-eye"></i> 2.3M</li>
                                         <li>
-                                            <input type="number" name="" id="">
+                                            <input type="number" name="" id="" min="0" style="width: 10%;">
                                             <i class='fas fa-cart-plus' style='color: #f3da35'></i>
                                         </li>
                                     </ul>
