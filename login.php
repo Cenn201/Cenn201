@@ -13,8 +13,8 @@ if (isset($_POST['username'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
     $err = [];
-    // kiểm tra xem có username trong database hay không?
-    $sql = "SELECT * FROM uml_user WHERE user_username = '$username'";
+    // kiểm tra xem có username trong database hay không
+    $sql = "SELECT * FROM uml_user WHERE user_username = '$username'  AND user_password = '$password'";
     $querry = mysqli_query($connection, $sql);
     $data = mysqli_fetch_assoc($querry); // dữ liệu của row 
     $checkUsername = mysqli_num_rows($querry); // kiểm tra xem row username có trong database hay không nếu có trả về 1 không có trả về 0
@@ -23,21 +23,26 @@ if (isset($_POST['username'])) {
         if ($checkPass == true) {
             // lưu vào session 
             $_SESSION['uml_user'] = $data; // tạo session user
-            header('Location: index.php');
+                if(isset($_GET['action'])){ 
+                    $action = $_GET['action'];
+                    header('Location: ./'.$action.'.php');
+                }else{
+                    header('Location: ./index.php');
+                }
         } else {
-            $err['password'] = '<i class="fa-solid fa-triangle-exclamation"></i> Sai mật khẩu';
+            $err['user_password'] = '<i class="fa-solid fa-triangle-exclamation"></i> Sai mật khẩu';
         }
     } else {
-        $err['username'] = '<i class="fa-solid fa-triangle-exclamation"></i> Tài khoản không tồn tại';
+        $err['user_username'] = '<i class="fa-solid fa-triangle-exclamation"></i> Tài khoản không tồn tại';
         if ($username == '') {
-            $err['username'] = '<i class="fa-solid fa-triangle-exclamation"></i> Bạn chưa nhập tài khoản';
+            $err['user_username'] = '<i class="fa-solid fa-triangle-exclamation"></i> Bạn chưa nhập tài khoản';
         }
     }
     if ($password == '') {
-        $err['password'] = '<i class="fa-solid fa-triangle-exclamation"></i> Bạn chưa nhập mật khẩu';
+        $err['passuser_passwordword'] = '<i class="fa-solid fa-triangle-exclamation"></i> Bạn chưa nhập mật khẩu';
     }
     if ($username == 'admin') {
-        header('Location: adminproduct.php');
+        header('Location: ./adminproduct.php');
     }
 }
 ?>

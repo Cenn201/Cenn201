@@ -3,9 +3,15 @@ require_once('./config/database.php');
 spl_autoload_register(function ($classname) {
     require_once("./app/models/$classname.php");
 });
-$productModel = new ProductModel();
 
-$productList = $productModel->GetAllProducts();
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $categoryModel = new CategoryModel();
+    $item = $categoryModel->GetCategory($id);
+    $productModel = new ProductModel();
+    $productList = $productModel->GetEightProductByCategory($id);
+}
+    $categoryList = $categoryModel->GetAllCategory();
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +31,7 @@ $productList = $productModel->GetAllProducts();
 
     <!-- Additional CSS Files -->
     <link rel="stylesheet" href="public/assets/css/fontawesome.css">
-    <link rel="stylesheet" href="public/assets/css/style.css"> -->
+    <link rel="stylesheet" href="public/assets/css/style.css">
     <link rel="stylesheet" href="public/assets/css/owl.css">
     <link rel="stylesheet" href="public/assets/css/animate.css">
     <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css">
@@ -69,16 +75,19 @@ $productList = $productModel->GetAllProducts();
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
                             <li><a href="/Cenn201" class="active">Trang chủ</a></li>
-                            <li class="nav-item dropdown d-flex">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Sản Phẩm
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="#">Action</a></li>
-                                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                </ul>
-                            </li>
+                            <li id="menu">
+                <a href="#">Sản Phẩm</a>
+                <ul>
+                  <?php
+                  foreach ($categoryList as $itemcategory) {
+                  ?>
+
+                    <li><a href="category_product.php?id=<?php echo $itemcategory['category_id']; ?>"><?php echo $itemcategory['category_name']; ?></a></li>
+                  <?php
+                  };
+                  ?>
+                </ul>
+              </li>
                             <li><a href="">Giỏ hàng</a></li>
                             <li><a href="">Dăng nhập<img src="public/hinhanh/background/profile-header.jpg" alt=""></a></li>
                         </ul>
@@ -118,25 +127,26 @@ $productList = $productModel->GetAllProducts();
 
                     <!-- ***** Most Popular Start ***** -->
                     <div class="most-popular">
-                        <h2 class="divider line glow" contenteditable>Tất cả sản phẩm</h2>
+                        <h2 class="divider line glow" contenteditable><?php echo $item['category_name']; ?></h2>
                         <div class="row">
                             <<div class="col-lg-12">
                                 <div class="row">
                                     <?php
+
                                     foreach ($productList as $itemproduct) {
                                     ?>
                                         <div class="col-lg-3 col-sm-6">
                                             <div class="item">
 
                                                 <a href="/Cenn201/product.php?id=<?php echo $itemproduct['product_id']; ?>">
-                                                    <img width="186px" height="200px" src="public/hinhanh/product/<?php echo $itemproduct['product_img']; ?>" alt="">
+                                                    <img width="100px" height="190px" src="public/hinhanh/product/<?php echo $itemproduct['product_img']; ?>" alt="">
                                                 </a>
                                                 <br>
                                                 <div class="item-content">
                                                     <div class="container">
                                                         <div class="row">
                                                             <div class="col-md-7 item-content1">
-                                                                <h4 class="p-0"><span><?php echo $itemproduct['product_name']; ?></span><?php echo $itemproduct['product_slug']; ?>
+                                                                <h4 class="p-0 mt-3"><span><?php echo $itemproduct['product_name']; ?></span><?php echo $itemproduct['product_slug']; ?>
                                                                     <br>
                                                                     <span style="color: red;"><?php echo number_format(sprintf('%0.3f', $itemproduct['product_price'])) . "đ"; ?></span>
                                                                 </h4>
@@ -144,12 +154,12 @@ $productList = $productModel->GetAllProducts();
                                                             <div class="col-md-5 p-0 item-conten2">
                                                                 <ul>
                                                                     <li>
+                                                                        <i class="fa fa-heart" style='color:#39def3'> <?php echo $itemproduct['product_like']; ?></i>
+                                                                    </li>
+                                                                    <li><i class="fa fa-eye"></i> <?php echo $itemproduct['product_view']; ?></li>
+                                                                    <li>
                                                                         <i class='fas fa-cart-plus' style='color: #f3da35'></i>
                                                                     </li>
-                                                                    <li>
-                                                                        <i class="fa fa-heart" style='color:#39def3'></i> 48
-                                                                    </li>
-                                                                    <li><i class="fa fa-eye"></i> 2.3M</li>
                                                                 </ul>
                                                             </div>
                                                         </div>

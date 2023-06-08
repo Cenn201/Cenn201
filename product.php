@@ -5,29 +5,32 @@ spl_autoload_register(function ($classname) {
 });
 
 
+
+$categoryModel = new CategoryModel();
+$categoryList = $categoryModel->GetAllCategory();
+
+$productModel = new ProductModel();
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
-    $productModel = new ProductModel();
-    $itemproduct = $productModel->GetProduct($id);
-    if(!isset($_COOKIE['viewedProduct'])) {
-        $value = [$id];
-        setcookie('viewedProduct', json_encode($value), time() + 3600);
-    }
-    else {
-        $viewedProduct = json_decode($_COOKIE['viewedProduct'], true);
-        if(!in_array($id, $viewedProduct)) {
-            if(count($viewedProduct) == 5) {
-                array_shift($viewedProduct);
-            }
-            array_push($viewedProduct, $id);
-            setcookie('viewedProduct', json_encode($viewedProduct), time() + 3600);
+
+    $itemproduct = $productModel->getProduct($id);
+
+    if (!isset($_COOKIE['viewedProduct'])) {
+        $itemproduct = [$id];
+        setcookie('viewedProduct', json_encode($itemproduct), time() + 3600);
+    } else {
+        $viewedProduct = json_decode($_COOKIE['viewedProduct']);
+        if (in_array($id, $viewedProduct)) {
+            array_diff($viewedProduct, array($id));
         }
-        else {
-            unset($viewedProduct[array_search($id, $viewedProduct)]);
-            array_push($viewedProduct, $id);
-            setcookie('viewedProduct', json_encode($viewedProduct), time() + 3600);
+
+        if (count($viewedProduct) == 5) {
+            array_pop($viewedProduct);
         }
+        array_unshift($viewedProduct, $id);
+        setcookie('viewedProduct', json_encode($viewedProduct), time() + 3600);
     }
+    $productModel->viewProduct($id);
 }
 ?>
 <!DOCTYPE html>
@@ -121,22 +124,25 @@ if (isset($_GET['id'])) {
                                 </div>
                             </div>
                             <div class="col-lg-6 col-sm-6 p-4">
-                                <h4 class="p-0"><span><?php echo $itemproduct['product_name']; ?></span>
-                                    <span style="color: info;"><?php echo $itemproduct['product_slug']; ?></span><br>
-                                    <span style="color: red;"><?php echo number_format(sprintf('%0.3f', $itemproduct['product_price'])) . "đ"; ?></span>
-                                </h4>
-                                <div class="text-bottom text-warning">
-                                    <ul>
-                                        <li>
-                                            <i class="fa fa-heart" style='color:#39def3'></i> 48
-                                            <i class="fa fa-eye"></i> 2.3M
-                                        </li>
-                                        <li>
-                                            <input type="number" name="" id="" min="0" style="width: 10%;">
-                                            <i class='fas fa-cart-plus' style='color: #f3da35'></i>
-                                        </li>
-                                    </ul>
-                                </div>
+
+                                <form action="./cart.php" method="GET">
+                                    <div style="height: 200px;">
+                                        <h1><span><?php echo $itemproduct['product_name']; ?></h1>
+                                        <h2>
+                                            <span style="color: info;"><?php echo $itemproduct['product_slug']; ?></span><br>
+                                        </h2>
+                                        <h3>
+                                            <span style="color: red;"><?php echo number_format(sprintf('%0.3f', $itemproduct['product_price'])) . "đ"; ?></span>
+                                        </h3>
+                                    </div>
+                                    <div class="text-bottom text-warning">
+                                        <ul>
+                                            <input type="number" name="quantity" value="1" style="width: 40px">
+                                            <input type="hidden" name="id" value="<?php echo $itemproduct['product_id']; ?>">
+                                            <button type="submit" class="btn btn-success">Mua ngay</button>
+                                        </ul>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                         <?php echo $itemproduct['product_detail']; ?>

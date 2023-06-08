@@ -3,6 +3,8 @@ require_once('./config/database.php');
 spl_autoload_register(function ($classname) {
     require_once("./app/models/$classname.php");
 });
+session_start();
+$user = isset($_SESSION['uml_user']) ? $_SESSION['uml_user'] : [];
 $productModel = new ProductModel();
 $productList = $productModel->GetAllProducts();
 if (isset($_POST['deleteId'])) {
@@ -79,14 +81,9 @@ if (isset($_POST['deleteId'])) {
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Sản Phẩm
                                 </a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="#">Action</a></li>
-                                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                </ul>
                             </li>
                             <li><a href="">Giỏ hàng</a></li>
-                            <li><a href="">Dăng nhập<img src="public/hinhanh/background/profile-header.jpg" alt=""></a></li>
+                            <li><a href="" style="width: 165px;"><?php echo $user['user_username']; ?> <img src="public/hinhanh/background/profile-header.jpg" alt=""></a></li>
                         </ul>
                         <a class='menu-trigger'>
                             <span>Menu</span>

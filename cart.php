@@ -1,10 +1,12 @@
 <?php
 require_once('./config/database.php');
 spl_autoload_register(function ($classname) {
-    require_once("./app/models/$classname.php");
+  require_once("./app/models/$classname.php");
 });
+
 $productModel = new ProductModel();
-$productList = $productModel->GetAllProducts()
+$productList = $productModel->GetAllProducts();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
